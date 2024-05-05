@@ -23,8 +23,10 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Todo(text: String) {
     var showFilled: Boolean by remember { mutableStateOf(false) }
-    Row {
-        IconButton(onClick = {showFilled = showFilled.not()}) {
+    Row{
+        IconButton(onClick = {
+            showFilled = showFilled.not()
+        }) {
             Icon(if (showFilled) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder, "Heartshaped Icon")
         }
         Text(
