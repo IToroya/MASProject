@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.project.errors.loginErrors.ErrorMessages
 import com.example.project.extensions.isValidEmail
 import com.example.project.extensions.isValidPassword
 
@@ -38,6 +39,7 @@ fun ContentView() {
     var loginEnabled: Boolean by remember { mutableStateOf(false) }
     var showEmailErrorMessage: Boolean by remember { mutableStateOf(false) }
     var inputsAreValid: Boolean by remember { mutableStateOf(false) }
+    var showPasswordErrorMessage: Boolean by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -50,32 +52,67 @@ fun ContentView() {
                 .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                modifier = Modifier.alpha(if (showEmailErrorMessage) 1f else 0f),
-                text = "Invalid Email",
-                color = Color.Red
-            )
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = emailInput,
-                onValueChange = {
-                    emailInput = it
-                                },
-                label = { Text("Email") }
-            )
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = passwordInput,
-                onValueChange = {
-                    passwordInput = it
-                    loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
-                                },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation()
-            )
+            if (showEmailErrorMessage) {
+                Text(
+                    text = ErrorMessages.EMAIL_ERROR_MESSAGE.rawValue,
+                    color = Color.Red
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = emailInput,
+                    onValueChange = {
+                        emailInput = it
+                        showEmailErrorMessage = false
+                    },
+                    label = { Text("Email") }
+                )
+            } else {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = emailInput,
+                    onValueChange = {
+                        emailInput = it
+                        showEmailErrorMessage = false
+                    },
+                    label = { Text("Email") }
+                )
+            }
+
+            if (showPasswordErrorMessage) {
+                Text(
+                    modifier = Modifier.alpha(if (showPasswordErrorMessage) 1f else 0f),
+                    text = ErrorMessages.PASSWORD_ERROR_MESSAGE.rawValue,
+                    color = Color.Red
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = passwordInput,
+                    onValueChange = {
+                        passwordInput = it
+                        loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
+                        showPasswordErrorMessage = false
+                    },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+            } else {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = passwordInput,
+                    onValueChange = {
+                        passwordInput = it
+                        loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
+                        showPasswordErrorMessage = false
+                    },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+            }
 
             ElevatedButton(
                 modifier = Modifier
@@ -83,6 +120,7 @@ fun ContentView() {
                 enabled = loginEnabled,
                 onClick = {
                     showEmailErrorMessage = !emailInput.isValidEmail()
+                    showPasswordErrorMessage = !passwordInput.isValidPassword()
                     inputsAreValid = passwordInput.isValidPassword() && emailInput.isValidEmail()
                 }
             ) {
