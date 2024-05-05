@@ -10,13 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.project.destinations.Destinations
 import com.example.project.views.login.LoginView
 import com.example.project.views.todo.TodosView
-
-enum class Destinations(val rawValue: String) {
-    LOGIN_VIEW(rawValue = "loginview"),
-    TODOS_VIEW(rawValue = "todosview")
-}
 
 @Preview(showBackground = true)
 @Composable

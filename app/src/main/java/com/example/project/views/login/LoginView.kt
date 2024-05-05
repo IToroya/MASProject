@@ -24,10 +24,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.project.destinations.Destinations
 import com.example.project.errors.loginErrors.ErrorMessages
 import com.example.project.extensions.isValidEmail
 import com.example.project.extensions.isValidPassword
-import com.example.project.views.content.Destinations
 
 @Composable
 fun LoginView(navController: NavHostController) {
