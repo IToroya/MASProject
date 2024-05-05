@@ -1,10 +1,13 @@
 package com.example.project.views.login
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,6 +37,7 @@ fun LoginView(navController: NavHostController) {
     var showEmailErrorMessage: Boolean by remember { mutableStateOf(false) }
     var inputsAreValid: Boolean by remember { mutableStateOf(false) }
     var showPasswordErrorMessage: Boolean by remember { mutableStateOf(false) }
+    var showProgressBar: Boolean by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -41,87 +45,107 @@ fun LoginView(navController: NavHostController) {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
-        if (showEmailErrorMessage) {
-            Text(
-                text = ErrorMessages.EMAIL_ERROR_MESSAGE.rawValue,
-                color = Color.Red
-            )
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = emailInput,
-                onValueChange = {
-                    emailInput = it
-                    showEmailErrorMessage = false
-                },
-                label = { Text("Email") }
-            )
-        } else {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = emailInput,
-                onValueChange = {
-                    emailInput = it
-                    showEmailErrorMessage = false
-                },
-                label = { Text("Email") }
-            )
-        }
+        if (!showProgressBar) {
 
-        if (showPasswordErrorMessage) {
-            Text(
-                modifier = Modifier.alpha(if (showPasswordErrorMessage) 1f else 0f),
-                text = ErrorMessages.PASSWORD_ERROR_MESSAGE.rawValue,
-                color = Color.Red
-            )
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = passwordInput,
-                onValueChange = {
-                    passwordInput = it
-                    loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
-                    showPasswordErrorMessage = false
-                },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation()
-            )
-        } else {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = passwordInput,
-                onValueChange = {
-                    passwordInput = it
-                    loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
-                    showPasswordErrorMessage = false
-                },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation()
-            )
-        }
-
-        ElevatedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            enabled = loginEnabled,
-            onClick = {
-                showEmailErrorMessage = !emailInput.isValidEmail()
-                showPasswordErrorMessage = !passwordInput.isValidPassword()
-                inputsAreValid = passwordInput.isValidPassword() && emailInput.isValidEmail()
-
-               if (inputsAreValid)  {
-                   navController.navigate(Destinations.TODOS_VIEW.rawValue)
-               }
+            if (showEmailErrorMessage) {
+                Text(
+                    text = ErrorMessages.EMAIL_ERROR_MESSAGE.rawValue,
+                    color = Color.Red
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = emailInput,
+                    onValueChange = {
+                        emailInput = it
+                        showEmailErrorMessage = false
+                    },
+                    label = { Text("Email") }
+                )
+            } else {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = emailInput,
+                    onValueChange = {
+                        emailInput = it
+                        showEmailErrorMessage = false
+                    },
+                    label = { Text("Email") }
+                )
             }
-        ) {
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
+
+            if (showPasswordErrorMessage) {
+                Text(
+                    modifier = Modifier.alpha(if (showPasswordErrorMessage) 1f else 0f),
+                    text = ErrorMessages.PASSWORD_ERROR_MESSAGE.rawValue,
+                    color = Color.Red
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = passwordInput,
+                    onValueChange = {
+                        passwordInput = it
+                        loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
+                        showPasswordErrorMessage = false
+                    },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+            } else {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = passwordInput,
+                    onValueChange = {
+                        passwordInput = it
+                        loginEnabled = passwordInput.isNotBlank() && emailInput.isNotBlank()
+                        showPasswordErrorMessage = false
+                    },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+            }
+
+            ElevatedButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                enabled = loginEnabled,
+                onClick = {
+                    showEmailErrorMessage = !emailInput.isValidEmail()
+                    showPasswordErrorMessage = !passwordInput.isValidPassword()
+                    inputsAreValid = passwordInput.isValidPassword() && emailInput.isValidEmail()
+
+                    if (inputsAreValid)  {
+                        showProgressBar = true
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            navController.navigate(Destinations.TODOS_VIEW.rawValue)
+                        }, 3000)
+                    } else {
+                        showProgressBar = true
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            showProgressBar = false
+                        }, 3000)
+                    }
+                }
+            ) {
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            }
+
+        } else {
+            Column {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                )
+            }
         }
     }
 }
