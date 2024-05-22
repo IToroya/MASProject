@@ -27,7 +27,7 @@ fun HeaderWithButtonView(headerTitle: String, clickHandler: () -> Unit){
 
         ElevatedButton(
             onClick = { clickHandler() }) {
-            Icon(Icons.Rounded.Add, "Plussymbol")
+            Icon(Icons.Rounded.Add, "Plus symbol")
         }
     }
 

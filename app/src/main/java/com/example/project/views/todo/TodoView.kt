@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Todo(text: String) {
+fun TodoView(text: String) {
     var showFilled: Boolean by remember { mutableStateOf(false) }
     Row{
         IconButton(onClick = {

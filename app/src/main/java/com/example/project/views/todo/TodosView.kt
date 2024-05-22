@@ -16,24 +16,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.room.Room
+import com.example.project.models.todo.AppDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
 fun TodosView() {
-    var todoTexts by remember {mutableStateOf(mutableListOf(
-        "Kiss Dog",
-        "Hug Wife",
-        "Buy Butter and Bread",
-        "Hold Hands with Wife"
-    )
-    )
+    var todoTexts by remember {
+        mutableStateOf(
+            mutableListOf(
+                "Kiss Dog",
+                "Hug Wife",
+                "Buy Butter and Bread",
+                "Hold Hands with Wife"
+            )
+        )
     }
-    var showModal: Boolean by remember { mutableStateOf(false)}
+    var showModal: Boolean by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
-    var newTodo: String by remember { mutableStateOf("")}
+    var newTodo: String by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -41,40 +43,40 @@ fun TodosView() {
             .padding(vertical = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column (
+        Column(
             modifier = Modifier.padding(horizontal = 10.dp)
-        ){
+        ) {
             HeaderWithButtonView("Todos") { showModal = true }
             todoTexts.forEach { todo ->
-                Todo(
+                TodoView(
                     text = todo
                 )
             }
-            if (showModal) {
-                ModalBottomSheet(
-                    onDismissRequest = { showModal = false },
-                    sheetState = sheetState
+        }
+        if (showModal) {
+            ModalBottomSheet(
+                onDismissRequest = { showModal = false },
+                sheetState = sheetState
+            )
+            {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 10.dp)
                 )
                 {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 10.dp)
-                    )
-                    {
-                        HeaderWithButtonView("New Todo") {
-                            todoTexts.add(newTodo)
-                            newTodo = ""
-                        }
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            value = newTodo,
-                            onValueChange = { newTodo = it },
-                            label = { Text(text = "Todo")}
-                        )
+                    HeaderWithButtonView("New Todo") {
+                        todoTexts.add(newTodo)
+                        newTodo = ""
                     }
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = newTodo,
+                        onValueChange = { newTodo = it },
+                        label = { Text(text = "Todo") }
+                    )
                 }
             }
         }

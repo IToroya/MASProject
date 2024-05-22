@@ -121,12 +121,12 @@ fun LoginView(navController: NavHostController) {
                         showProgressBar = true
                         Handler(Looper.getMainLooper()).postDelayed({
                             navController.navigate(Destinations.TODOS_VIEW.rawValue)
-                        }, 3000)
+                        }, 2000)
                     } else {
                         showProgressBar = true
                         Handler(Looper.getMainLooper()).postDelayed({
                             showProgressBar = false
-                        }, 3000)
+                        }, 2000)
                     }
                 }
             ) {
